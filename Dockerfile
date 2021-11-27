@@ -27,6 +27,9 @@ RUN apk add --update \
   pkgconf \
   pkgconfig \
   zlib-dev
+RUN mkdir /tmp/nginx-vod-module
+ARG VOD_MODULE_VERSION=399e1a0ecb5b0007df3a627fa8b03628fc922d5e
+RUN curl -sL https://github.com/kaltura/nginx-vod-module/archive/${VOD_MODULE_VERSION}.tar.gz | tar -C /tmp/nginx-vod-module --strip 1 -xz
 
 # Get nginx source.
 RUN cd /tmp && \
@@ -43,6 +46,7 @@ RUN cd /tmp && \
 RUN cd /tmp/nginx-${NGINX_VERSION} && \
   ./configure \
   --prefix=/usr/local/nginx \
+  --add-module=/tmp/nginx-vod-module \
   --add-module=/tmp/nginx-rtmp-module-${NGINX_RTMP_VERSION} \
   --conf-path=/etc/nginx/nginx.conf \
   --with-threads \
